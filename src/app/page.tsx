@@ -6,6 +6,7 @@ import { useExpenseDialog } from "@/hooks/useExpenseDialog";
 import { useToast } from "@/hooks/useToast";
 import { dashboardStats, monthlyTotals, sortExpenses, totalsByCategory } from "@/lib/analytics";
 import { generateSampleExpenses } from "@/lib/sampleData";
+import { downloadCSV } from "@/lib/csv";
 import { formatMonthLabel, monthKey, todayISO } from "@/lib/format";
 import DataGuard from "@/components/DataGuard";
 import SummaryCards from "@/components/SummaryCards";
@@ -17,14 +18,31 @@ import { EmptyState } from "@/components/States";
 export default function DashboardPage() {
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">An overview of your spending habits.</p>
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Dashboard</h1>
+          <p className="mt-1 text-sm text-slate-500">An overview of your spending habits.</p>
+        </div>
+        <ExportDataButton />
       </div>
       <DataGuard>
         <Dashboard />
       </DataGuard>
     </>
+  );
+}
+
+function ExportDataButton() {
+  const { expenses, status } = useExpenses();
+  return (
+    <button
+      type="button"
+      onClick={() => downloadCSV(expenses)}
+      disabled={status !== "ready" || expenses.length === 0}
+      className="btn-secondary"
+    >
+      Export Data
+    </button>
   );
 }
 
