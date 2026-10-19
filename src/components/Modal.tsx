@@ -7,8 +7,10 @@ interface ModalProps {
   description?: string;
   onClose: () => void;
   children: ReactNode;
-  size?: "sm" | "md";
+  size?: "sm" | "md" | "xl";
 }
+
+const SIZES = { sm: "sm:max-w-sm", md: "sm:max-w-lg", xl: "sm:max-w-5xl" };
 
 export default function Modal({ title, description, onClose, children, size = "md" }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
@@ -51,9 +53,7 @@ export default function Modal({ title, description, onClose, children, size = "m
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className={`relative w-full animate-slide-up rounded-t-2xl bg-white shadow-xl sm:rounded-2xl ${
-          size === "sm" ? "sm:max-w-sm" : "sm:max-w-lg"
-        } max-h-[92vh] overflow-y-auto`}
+        className={`relative w-full animate-slide-up rounded-t-2xl bg-white shadow-xl sm:rounded-2xl ${SIZES[size]} max-h-[92vh] overflow-y-auto`}
       >
         <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-4">
           <div>
