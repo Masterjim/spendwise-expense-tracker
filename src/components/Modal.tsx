@@ -7,10 +7,14 @@ interface ModalProps {
   description?: string;
   onClose: () => void;
   children: ReactNode;
-  size?: "sm" | "md";
+  /** Pinned below the scrollable body. */
+  footer?: ReactNode;
+  size?: "sm" | "md" | "xl";
 }
 
-export default function Modal({ title, description, onClose, children, size = "md" }: ModalProps) {
+const SIZES = { sm: "sm:max-w-sm", md: "sm:max-w-lg", xl: "sm:max-w-5xl" };
+
+export default function Modal({ title, description, onClose, children, footer, size = "md" }: ModalProps) {
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -51,11 +55,9 @@ export default function Modal({ title, description, onClose, children, size = "m
         role="dialog"
         aria-modal="true"
         aria-labelledby="modal-title"
-        className={`relative w-full animate-slide-up rounded-t-2xl bg-white shadow-xl sm:rounded-2xl ${
-          size === "sm" ? "sm:max-w-sm" : "sm:max-w-lg"
-        } max-h-[92vh] overflow-y-auto`}
+        className={`relative flex max-h-[92vh] w-full animate-slide-up flex-col rounded-t-2xl bg-white shadow-xl sm:rounded-2xl ${SIZES[size]}`}
       >
-        <div className="flex items-start justify-between gap-4 border-b border-slate-100 px-6 py-4">
+        <div className="flex shrink-0 items-start justify-between gap-4 border-b border-slate-100 px-6 py-4">
           <div>
             <h2 id="modal-title" className="text-lg font-semibold text-slate-900">
               {title}
@@ -73,7 +75,8 @@ export default function Modal({ title, description, onClose, children, size = "m
             </svg>
           </button>
         </div>
-        <div className="px-6 py-5">{children}</div>
+        <div className="flex-1 overflow-y-auto px-6 py-5">{children}</div>
+        {footer && <div className="border-t border-slate-100 bg-slate-50/70 px-6 py-4 sm:rounded-b-2xl">{footer}</div>}
       </div>
     </div>
   );

@@ -6,13 +6,13 @@ import { useExpenses } from "@/hooks/useExpenses";
 import { useExpenseDialog } from "@/hooks/useExpenseDialog";
 import { useToast } from "@/hooks/useToast";
 import { filterExpenses, sortExpenses, sum } from "@/lib/analytics";
-import { downloadCSV } from "@/lib/csv";
 import { formatCurrency } from "@/lib/format";
 import DataGuard from "@/components/DataGuard";
 import FilterBar, { EMPTY_FILTERS } from "@/components/FilterBar";
 import ExpenseTable from "@/components/ExpenseTable";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { EmptyState, Skeleton } from "@/components/States";
+import ExportButton from "@/components/export/ExportButton";
 
 const PAGE_SIZE = 25;
 
@@ -68,20 +68,6 @@ function ExpensesView() {
     }
   };
 
-  const handleExport = () => {
-    if (filtered.length === 0) {
-      toast("Nothing to export with the current filters.", { variant: "error" });
-      return;
-    }
-    try {
-      downloadCSV(filtered);
-      toast(`Exported ${filtered.length} ${filtered.length === 1 ? "expense" : "expenses"} to CSV`);
-    } catch (err) {
-      console.error(err);
-      toast("Export failed. Please try again.", { variant: "error" });
-    }
-  };
-
   const handleClearAll = () => {
     const previous = clearAll();
     setConfirmClear(false);
@@ -105,13 +91,13 @@ function ExpensesView() {
               Clear all
             </button>
           )}
-          <button type="button" onClick={handleExport} disabled={expenses.length === 0} className="btn-secondary">
-            <svg viewBox="0 0 20 20" fill="currentColor" className="h-4 w-4" aria-hidden>
-              <path d="M10.75 2.75a.75.75 0 0 0-1.5 0v8.614L6.295 8.235a.75.75 0 1 0-1.09 1.03l4.25 4.5a.75.75 0 0 0 1.09 0l4.25-4.5a.75.75 0 0 0-1.09-1.03l-2.955 3.129V2.75Z" />
-              <path d="M3.5 12.75a.75.75 0 0 0-1.5 0v2.5A2.75 2.75 0 0 0 4.75 18h10.5A2.75 2.75 0 0 0 18 15.25v-2.5a.75.75 0 0 0-1.5 0v2.5c0 .69-.56 1.25-1.25 1.25H4.75c-.69 0-1.25-.56-1.25-1.25v-2.5Z" />
-            </svg>
-            Export CSV
-          </button>
+          <ExportButton
+            getInitialValues={() => ({
+              startDate: filters.startDate,
+              endDate: filters.endDate,
+              categories: filters.category === "All" ? undefined : [filters.category],
+            })}
+          />
         </div>
       </div>
 

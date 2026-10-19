@@ -13,13 +13,17 @@ import MonthlyChart from "@/components/MonthlyChart";
 import CategoryBreakdown from "@/components/CategoryBreakdown";
 import RecentExpenses from "@/components/RecentExpenses";
 import { EmptyState } from "@/components/States";
+import ExportButton from "@/components/export/ExportButton";
 
 export default function DashboardPage() {
   return (
     <>
-      <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-500">An overview of your spending habits.</p>
+      <div className="mb-8 flex items-end justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">Dashboard</h1>
+          <p className="mt-1 text-sm text-slate-500">An overview of your spending habits.</p>
+        </div>
+        <ExportButton />
       </div>
       <DataGuard>
         <Dashboard />
